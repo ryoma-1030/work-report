@@ -1,21 +1,26 @@
 import { useState, useEffect } from "react";
 import { Calendar } from "@/types/Calendar";
 import { reportData } from "@/data/report";
+import { scheduleData } from "@/data/schedule";
+import { usePathname } from "next/navigation";
 
 /**
  * 共通フック
  */
 export const useWorkReport = () => {
-  const today = new Date();
-  const [year, setYear] = useState<number>(today.getFullYear());
-  const [month, setMonth] = useState<number>(today.getMonth() + 1); //1-12で管理
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const pathname = usePathname();
+  // 仮実装のため2025年
+  const [year, setYear] = useState<number | null>(2025);
+  // 仮実装のため10月
+  const [month, setMonth] = useState<number | null>(10);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // マウントされるまではローディング扱い
   const [data, setData] = useState<Calendar[]>([]);
 
   const handleDate = (key: string) => {
     const [y, m] = key.split("-");
     const newYear = Number(y);
     const newMonth = Number(m); // 1-12
+    setIsLoading(true); // 日付変更時にローディングを開始
     setYear(newYear);
     setMonth(newMonth);
   };
@@ -23,25 +28,32 @@ export const useWorkReport = () => {
   const handleDataChange = (
     rowIndex: number,
     field: keyof Calendar,
-    value: string
+    value: string | boolean
   ) => {
     const updatedData = [...data];
-    // 型アサーションを使用して特定のプロパティを更新
-    (updatedData[rowIndex] as any)[field] = value;
+    // スプレッド構文で特定のプロパティを安全に更新
+    updatedData[rowIndex] = { ...updatedData[rowIndex], [field]: value };
     setData(updatedData);
   };
 
+  // 初回レンダリング後に日付を初期化し、データを取得する
   useEffect(() => {
     const fetchData = () => {
-      setIsLoading(true);
-      const foundData = reportData.find(
-        (d) => d.year === year && d.month === month
+      const targetYear = year ?? new Date().getFullYear();
+      const targetMonth = month ?? new Date().getMonth() + 1;
+
+      // URLに応じてデータソースを切り替える
+      const dataSource = pathname.includes("/report")
+        ? reportData
+        : scheduleData;
+
+      const foundData = dataSource.find(
+        (d) => d.year === targetYear && d.month === targetMonth
       ) ?? {
-        year: year,
-        month: month,
+        year: targetYear,
+        month: targetMonth,
         records: [],
       };
-
       // reportDataのプロパティ名をCalendar型にマッピングする
       const mappedData: Calendar[] = foundData.records.map((record: any) => ({
         date: record.date,
@@ -55,13 +67,18 @@ export const useWorkReport = () => {
         pj: record.pj,
         approval: record.approval,
       }));
-
       setData(mappedData);
       setIsLoading(false);
     };
 
-    fetchData();
-  }, [year, month]);
+    if (year === null && month === null) {
+      const today = new Date();
+      setYear(today.getFullYear());
+      setMonth(today.getMonth() + 1);
+    } else if (year !== null && month !== null) {
+      fetchData();
+    }
+  }, [year, month, pathname]);
 
   return { year, month, data, isLoading, handleDate, handleDataChange };
 };
