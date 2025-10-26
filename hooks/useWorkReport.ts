@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { Calendar } from "@/types/Calendar";
 import { reportData } from "@/data/report";
 
+/**
+ * 共通フック
+ */
 export const useWorkReport = () => {
   const today = new Date();
   const [year, setYear] = useState<number>(today.getFullYear());
