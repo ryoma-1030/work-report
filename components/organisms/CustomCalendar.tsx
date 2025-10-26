@@ -8,19 +8,26 @@ import TableRow from "@mui/material/TableRow";
 import TableHead from "@mui/material/TableHead";
 import { TableCell, TextField, Select, MenuItem } from "@mui/material";
 import { Calendar } from "@/types/Calendar";
-import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
+import { EditableTimeCell } from "../molecules/EditableTimeCell";
+import { ApprovalBadge } from "../atoms/ApprovalBadge";
 
 type CustomCalendarProps = {
   data: Calendar[];
   onDataChange: (
     rowIndex: number,
     field: keyof Calendar,
-    value: string
+    value: string | boolean
   ) => void;
 };
 
+/**
+ * MUIコンポーネントをカスタムしたコンポーネント（Organism）
+ * @param props - プロパティ
+ * @returns カスタムカレンダー
+ */
 export const CustomCalendar: FC<CustomCalendarProps> = (
   props: CustomCalendarProps
 ): JSX.Element => {
@@ -97,72 +104,33 @@ export const CustomCalendar: FC<CustomCalendarProps> = (
                           }
                           variant="standard"
                         >
-                          <MenuItem value="出勤"></MenuItem>
+                          <MenuItem value="出勤">出勤</MenuItem>
                           <MenuItem value="欠勤">欠勤</MenuItem>
                           <MenuItem value="有給">有給</MenuItem>
                         </Select>
                       </TableCell>
                       <TableCell align="center">
-                        <TimePicker
-                          value={
-                            row.startTime
-                              ? dayjs(`1970-01-01T${row.startTime}`)
-                              : null
-                          }
+                        <EditableTimeCell
+                          value={row.startTime}
                           onChange={(newValue) =>
                             handleTimeChange(rowIndex, "startTime", newValue)
                           }
-                          ampm={false}
-                          slotProps={{
-                            textField: {
-                              variant: "standard",
-                            },
-                            openPickerButton: {
-                              style: { display: "none" },
-                            },
-                          }}
                         />
                       </TableCell>
                       <TableCell align="center">
-                        <TimePicker
-                          value={
-                            row.endTime
-                              ? dayjs(`1970-01-01T${row.endTime}`)
-                              : null
-                          }
+                        <EditableTimeCell
+                          value={row.endTime}
                           onChange={(newValue) =>
                             handleTimeChange(rowIndex, "endTime", newValue)
                           }
-                          ampm={false}
-                          slotProps={{
-                            textField: {
-                              variant: "standard",
-                            },
-                            openPickerButton: {
-                              style: { display: "none" },
-                            },
-                          }}
                         />
                       </TableCell>
                       <TableCell align="center">
-                        <TimePicker
-                          value={
-                            row.dayOff
-                              ? dayjs(`1970-01-01T${row.dayOff}`)
-                              : null
-                          }
+                        <EditableTimeCell
+                          value={row.dayOff}
                           onChange={(newValue) =>
                             handleTimeChange(rowIndex, "dayOff", newValue)
                           }
-                          ampm={false}
-                          slotProps={{
-                            textField: {
-                              variant: "standard",
-                            },
-                            openPickerButton: {
-                              style: { display: "none" },
-                            },
-                          }}
                         />
                       </TableCell>
                       <TableCell align="center">{row.workTime}</TableCell>
@@ -177,7 +145,7 @@ export const CustomCalendar: FC<CustomCalendarProps> = (
                       </TableCell>
                       <TableCell align="center">{row.pj}</TableCell>
                       <TableCell align="center">
-                        {row.approval === true ? "〇" : ""}
+                        <ApprovalBadge isApproved={row.approval} />
                       </TableCell>
                     </TableRow>
                   );

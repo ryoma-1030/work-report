@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 勤務管理アプリケーション
 
-## Getting Started
+このプロジェクトは、Next.js と Material-UI を使用して構築された勤務報告・予定管理アプリケーションです。ユーザーは月ごとの勤務データを表示・編集することができます。（将来は）
 
-First, run the development server:
+## 主な機能
+
+- **動的なデータ読み込み**: URL に応じて、業務報告書または勤務予定表のデータを動的に読み込みます。
+- **インタラクティブなカレンダー**: テーブルベースのカレンダーで月ごとの勤務データを表示し、出欠や勤務時間などの詳細をインラインで編集できます。
+- **コンポーネントベースのアーキテクチャ**: Atomic Design の原則に従い、コンポーネントを`atoms`, `molecules`, `organisms`, `templates`に整理し、再利用性とメンテナンス性を高めています。
+
+## 課題
+
+- **フロントしか開発できなかった**:フロントしかないのでモックになっています。例えばデータは直書きで 10 月分しか用意できていません。
+- **Atomic Design が完全に実装できていない**:構造を理解することはできたものの、Atom への分離ができる箇所がいくつも存在します。
+- **設計ができていない**:設計が甘く、手戻りが多かったです。今思えば当然ですが、DB 設計ができていないのが致命的でした。
+
+## 開発環境の構築
+
+ローカルマシンで開発環境をセットアップするための手順です。
+
+### 1. Node.js のインストール
+
+このプロジェクトでは **Node.js v20** が必要です。
+以下の公式サイトから、ご自身の PC 環境に合ったインストーラーをダウンロードしてインストールしてください。
+
+[https://nodejs.org/](https://nodejs.org/)
+
+### 2. プロジェクトのダウンロード
+
+このプロジェクトのリポジトリをダウンロードします。
+
+### 3. 依存ライブラリのインストール
+
+プロジェクトの動作に必要なライブラリ（Material-UI など）をインストールします。
+このコマンドは`package.json`ファイルを読み込み、記載されているものをすべてインストールします。
+
+```bash
+cd "work-reportのルートディレクトリ"
+npm install
+```
+
+### 4. 開発サーバーの起動
+
+以下のコマンドで開発サーバーを起動します。
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+サーバーが起動したら、ブラウザで http://localhost:3000/schedule を開いてアプリケーションを確認してください。

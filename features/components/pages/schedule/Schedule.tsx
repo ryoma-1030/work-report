@@ -1,6 +1,6 @@
 "use client";
-import { CustomCalendar } from "@/components/elements/CustomCalendar";
-import { WorkReportLayout } from "@/components/layouts/WorkReportLayout";
+import { CustomCalendar } from "@/components/organisms/CustomCalendar";
+import { WorkReportLayout } from "@/components/templates/WorkReportLayout";
 
 /**
  * 勤務予定表ページ
